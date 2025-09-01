@@ -1,20 +1,29 @@
 from datetime import datetime
 from pydantic import BaseModel
+from typing import Optional, List
 
+# User schemas
+class UserBase(BaseModel):
+    username: str
+    email: str
+    phone_number: Optional[str] = None
 
-class User(BaseModel):
+class UserCreate(UserBase):
+    password: str
+
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    phone_number: Optional[str] = None
+
+class UserResponse(BaseModel):
     user_id: int
     username: str
     email: str
-    phone_number: str
+    phone_number: Optional[str]
     balance: float
     created_at: datetime
-    updated_at: datetime
 
-class UserUpdate(BaseModel):
-    username: str
-    phone_number: str
-
+# Wallet schemas
 class WalletBalance(BaseModel):
     user_id: int
     balance: float
@@ -28,23 +37,27 @@ class WalletWithdraw(BaseModel):
     amount: float
     description: str
 
-class WalletTransfer(BaseModel):
-    amount: float
-    description: str
-    recipient_user_id: int
-
-class WalletTransferResponse(BaseModel):
+class WalletAddMoneyResponse(BaseModel):
     transaction_id: int
     user_id: int
     amount: float
     new_balance: float
     transaction_type: str
-    
-class Transaction(BaseModel):
+
+# Transaction schemas
+class TransactionBase(BaseModel):
+    transaction_type: str
+    amount: float
+    description: Optional[str] = None
+
+class TransactionCreate(TransactionBase):
+    user_id: int
+
+class TransactionResponse(BaseModel):
     transaction_id: int
     transaction_type: str
     amount: float
-    description: str
+    description: Optional[str]
     created_at: datetime
 
 class TransactionDetail(BaseModel):
@@ -52,29 +65,34 @@ class TransactionDetail(BaseModel):
     user_id: int
     transaction_type: str
     amount: float
-    description: str
-    recipient_user_id: int
-    reference_transaction_id: int
+    description: Optional[str]
+    recipient_user_id: Optional[int]
+    reference_transaction_id: Optional[int]
     created_at: datetime
 
-class TransactionCreate(BaseModel):
-    user_id: int
-    transaction_type: str
-    amount: float
-    description: str    
+class TransactionHistoryResponse(BaseModel):
+    transactions: List[TransactionResponse]
+    total: int
+    page: int
+    limit: int
 
-class WalletTransferCreate(BaseModel):
+# Transfer schemas
+class TransferCreate(BaseModel):
     sender_user_id: int
     recipient_user_id: int
     amount: float
     description: str
 
-class WalletTransferResponse(BaseModel):
+class TransferResponse(BaseModel):
     transfer_id: str
     sender_transaction_id: int
     recipient_transaction_id: int
+    amount: float
+    sender_new_balance: float
+    recipient_new_balance: float
+    status: str
 
-class WalletTransferDetail(BaseModel):
+class TransferDetail(BaseModel):
     transfer_id: str
     sender_user_id: int
     recipient_user_id: int
@@ -82,3 +100,9 @@ class WalletTransferDetail(BaseModel):
     description: str
     status: str
     created_at: datetime
+
+# Error response
+class ErrorResponse(BaseModel):
+    error: str
+    current_balance: Optional[float] = None
+    required_amount: Optional[float] = None
