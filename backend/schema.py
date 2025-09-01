@@ -15,7 +15,6 @@ class UserUpdate(BaseModel):
     username: str
     phone_number: str
 
-
 class WalletBalance(BaseModel):
     user_id: int
     balance: float

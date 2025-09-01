@@ -5,7 +5,7 @@ from db import Base
 
 class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, primary_key=True, index=True)
     username = Column(String, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     password = Column(String, nullable=False)
@@ -15,7 +15,7 @@ class User(Base):
     updated_at = Column(DateTime, default=datetime.utcnow)
 
     __tablename__ = "transactions"
-    id = Column(Integer, primary_key=True, index=True)
+    transaction_id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     transaction_type = Column(Enum("CREDIT", "DEBIT", "TRANSFER_IN", "TRANSFER_OUT", name="transaction_type"))
     amount = Column(Float, nullable=False)
