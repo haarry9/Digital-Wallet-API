@@ -1,5 +1,3 @@
-from ntpath import exists
-from backend.schema import UserUpdate
 from fastapi import FastAPI
 from db import engine
 from models import Base
